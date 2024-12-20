@@ -1,6 +1,9 @@
 from transformers import pipeline
 import streamlit as st
-import numpy as np
+import random
+import time
+
+st.title("Simple chat")
 
 # Initialize chat history
 if "messages" not in st.session_state:
@@ -23,7 +26,11 @@ def run_bert_eval(prompt):
 if prompt := st.chat_input("What is up?"):
     # Display user message in chat message container
     with st.chat_message("user"):
-        result = run_bert_eval(prompt)
-        st.markdown(result)
+        st.markdown(prompt)
     # Add user message to chat history
     st.session_state.messages.append({"role": "user", "content": prompt})
+
+    with st.chat_message("assistant"):
+        response = st.write_stream(run_bert_eval(prompt))
+    # Add assistant response to chat history
+    st.session_state.messages.append({"role": "assistant", "content": response})

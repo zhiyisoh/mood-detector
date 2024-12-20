@@ -1,0 +1,29 @@
+from transformers import pipeline
+import streamlit as st
+import numpy as np
+
+# Initialize chat history
+if "messages" not in st.session_state:
+    st.session_state.messages = []
+
+# Display chat messages from history on app rerun
+for message in st.session_state.messages:
+    with st.chat_message(message["role"]):
+        st.markdown(message["content"])
+
+def run_bert_eval(prompt):
+    # this bert encoder model is finetuned on bert-base-uncased emotion dataset to detect emotion
+    classifier = pipeline("text-classification",
+                        model='bhadresh-savani/bert-base-uncased-emotion', 
+                        return_all_scores=True)
+    prediction = classifier("I love using transformers. The best part is wide range of support and its easy to use", )
+    return prediction
+
+# Accept user input
+if prompt := st.chat_input("What is up?"):
+    # Display user message in chat message container
+    with st.chat_message("user"):
+        result = run_bert_eval(prompt)
+        st.markdown(result)
+    # Add user message to chat history
+    st.session_state.messages.append({"role": "user", "content": prompt})

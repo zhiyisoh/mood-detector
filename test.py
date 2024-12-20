@@ -19,7 +19,7 @@ def run_bert_eval(prompt):
     classifier = pipeline("text-classification",
                         model='bhadresh-savani/bert-base-uncased-emotion', 
                         return_all_scores=True)
-    prediction = classifier("I love using transformers. The best part is wide range of support and its easy to use", )
+    prediction = classifier(prompt, )
     return prediction
 
 # Accept user input
@@ -31,6 +31,7 @@ if prompt := st.chat_input("What is up?"):
     st.session_state.messages.append({"role": "user", "content": prompt})
 
     with st.chat_message("assistant"):
+        print("prompt: ", prompt)
         response = st.write_stream(run_bert_eval(prompt))
     # Add assistant response to chat history
     st.session_state.messages.append({"role": "assistant", "content": response})

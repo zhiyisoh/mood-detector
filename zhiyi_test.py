@@ -16,7 +16,7 @@ classifier = pipeline("text-classification",
 if "messages" not in st.session_state:
     st.session_state.messages = []
 if "emotion_states" not in st.session_state:
-    st.session_state.emotion_state = []
+    st.session_state["emotion_states"] = []
 
 # Display chat messages from history on app rerun
 for message in st.session_state.messages:
@@ -41,6 +41,7 @@ def generate_response_with_context(prompt, chat_history, dialogpt_tokenizer, dia
         context += " "
         context += i
     
+    print(context)
     # Tokenize input
     inputs = dialogpt_tokenizer.encode(context, return_tensors="pt")
     
@@ -81,8 +82,8 @@ if prompt := st.chat_input("What is up?"):
     with st.chat_message("assistant"):
         print("prompt: ", prompt)
         emotion = run_bert_eval(prompt)
-        st.session_state.emotion_state.append(emotion)
-        response = generate_response_with_context(prompt, st.session_state.emotion_state, dialogpt_tokenizer, dialogpt_model)
+        st.session_state["emotion_states"].append(emotion)
+        response = generate_response_with_context(prompt, st.session_state["emotion_states"], dialogpt_tokenizer, dialogpt_model)
         print("response: ")
         response = st.write(response)
     # Add assistant response to chat history
